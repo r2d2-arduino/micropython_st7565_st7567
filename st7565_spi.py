@@ -6,10 +6,10 @@ Connection: SPI
 Color: 1-bit monochrome
 Controllers: Esp32-family, RP2
  
-Project path: https://github.com/r2d2-arduino/
+Project path: https://github.com/r2d2-arduino/micropython_st7565_st7567
+MIT License
 
 Author: Arthur Derkach
-MIT License
 """
 from machine import Pin
 from time import sleep_ms
@@ -72,7 +72,6 @@ class ST7565_SPI( FrameBuffer ):
         self.font = None
         self.text_wrap = False
         
-
         self.rotation = rotation
 
         if self.rotation & 1:
@@ -202,37 +201,6 @@ class ST7565_SPI( FrameBuffer ):
             self.write_command( CMD_SET_ALLPX_ON )
         else:
             self.write_command( CMD_SET_ALLPX_NORMAL )
-
-    def prepare_buffer( self ):
-        ''' Buffer preparation '''
-        if self.rotation & 1: # for 90 & 270 degrees
-            buffer = bytearray( self.buffsize )
-            # resort order of normal buffer
-            rowsize = DISPLAY_HEIGHT // 8
-            for i in range(DISPLAY_WIDTH):
-                for j in range(rowsize):
-                    buffer[i + j * DISPLAY_WIDTH] = self.buffer[i * rowsize + j]
-        else: # for 0 & 180 degrees
-            buffer = self.buffer
-
-        return buffer
-
-    def show( self ):
-        ''' Displays the contents of the buffer on the screen '''
-        buffer = self.prepare_buffer()
-
-        self.cs.value( 0 )
-
-        for page in range( 8 ):
-            self.dc.value( 0 ) # Command mode         
-            self.spi.write( bytearray( [ CMD_SET_START_LINE,
-                                         CMD_SET_PAGE + page,
-                                         ( CMD_COLUMN_HI  | (self.offset >> 4) ),
-                                         ( CMD_COLUMN_LOW | self.offset ) ] ) )
-            self.dc.value( 1 ) # Data mode
-            self.spi.write( buffer[ DISPLAY_WIDTH * page: DISPLAY_WIDTH * ( page + 1 ) ] )
-
-        self.cs.value( 1 )
 
     def set_font(self, font):
         """ Set font for text
@@ -383,4 +351,35 @@ class ST7565_SPI( FrameBuffer ):
                     bitmap[total_size - 1 - offset - w] = image_buffer[offset + block - 1 - w]
 
         fb = FrameBuffer(bitmap, width, height, MONO_HLSB)
-        self.blit(fb, x, y) 
+        self.blit(fb, x, y)
+        
+    def prepare_buffer( self ):
+        ''' Buffer preparation '''
+        if self.rotation & 1: # for 90 & 270 degrees
+            buffer = bytearray( self.buffsize )
+            # resort order of normal buffer
+            rowsize = DISPLAY_HEIGHT // 8
+            for i in range(DISPLAY_WIDTH):
+                for j in range(rowsize):
+                    buffer[i + j * DISPLAY_WIDTH] = self.buffer[i * rowsize + j]
+        else: # for 0 & 180 degrees
+            buffer = self.buffer
+
+        return buffer
+
+    def show( self ):
+        ''' Displays the contents of the buffer on the screen '''
+        buffer = self.prepare_buffer()
+
+        self.cs.value( 0 )
+
+        for page in range( 8 ):
+            self.dc.value( 0 ) # Command mode         
+            self.spi.write( bytearray( [ CMD_SET_START_LINE,
+                                         CMD_SET_PAGE + page,
+                                         ( CMD_COLUMN_HI  | (self.offset >> 4) ),
+                                         ( CMD_COLUMN_LOW | self.offset ) ] ) )
+            self.dc.value( 1 ) # Data mode
+            self.spi.write( buffer[ DISPLAY_WIDTH * page: DISPLAY_WIDTH * ( page + 1 ) ] )
+
+        self.cs.value( 1 )   
