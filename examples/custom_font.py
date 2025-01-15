@@ -14,7 +14,8 @@ ROTATION_180 = 2
 ROTATION_270 = 3
 
 lcd = ST7565_SPI( spi, CS, DC, RST, ROTATION_0 )
-lcd.set_contrast(36) # 63 - max
+lcd.set_contrast(32) # 63 - max
+lcd.set_text_wrap()
 lcd.fill(0)
 lcd.set_font(MY_FONT)
 lcd.text("Default 8x8 font", 0, 0)
