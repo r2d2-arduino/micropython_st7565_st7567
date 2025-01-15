@@ -28,9 +28,10 @@ lcd.show()
 
 ## Display functions:
 * **set_contrast( value )** - Set contrast of display: 1..63
-* **set_dot_reverse( on )** - Set reverse of dots on the display
-* **show_all_pixels( on )** - Show all pixels on the display
+* **set_dot_reverse( on = True )** - Set reverse of dots on the display
+* **show_all_pixels( on = True )** - Show all pixels on the display
 * **set_font( font )** - Set font for text. Converted font is used. See utils/font_to_py.py.
+* **set_text_wrap( on = True )** - Set text wrapping
 * **draw_text( text, x, y, color = 1 )** - Draw text on the buffer
 * **draw_bitmap( bitmap, x, y, color )** - Draw a bitmap (glyph) on the buffer
 * **load_bmp( filename, x = 0, y = 0, color = 1 )** - Load monochromatic BMP image on the buffer
