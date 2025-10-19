@@ -39,3 +39,5 @@ lcd.show()
 
 * **other framebuffer functions** - see more on https://docs.micropython.org/en/latest/library/framebuf.html#module-framebuf
 
+## Tools
+* **tools / font_to_py.py** - Used to convert ttf font to py-script. First of all, you need to install: `pip install freetype-py`. Then run a command similar to the example: `python font_to_py.py -x LibreBodoni-Bold.ttf 24 LibreBodoni24.py`. More details: https://github.com/peterhinch/micropython-font-to-py
